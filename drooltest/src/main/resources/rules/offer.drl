@@ -1,0 +1,61 @@
+package rules
+
+import com.example.drooltest.model.Product;
+import com.example.drooltest.model.Shop;
+
+rule "Offer for card IC"
+salience 2
+activation-group "HDFC"
+	when
+		productObject: Product(cardType=="HDFC")
+	then
+	  	productObject.setDiscount(productObject.getDiscount()+5);
+	  	System.out.println("cardType is HDFC");
+	end  
+rule "Offer for first time user"
+salience 3
+activation-group "HDFC"
+	when
+		productObject: Product(event=="sale")
+	then
+		productObject.setDiscount(productObject.getDiscount()+10);
+		System.out.println("event for sale" +productObject.getEvent());
+	end			
+rule "Offer for card SBI"
+salience 3
+	when
+		productObject: Product(cardType=="SBI")
+	then
+	 	productObject.setDiscount(productObject.getDiscount()+10);
+	 	System.out.println("cardType is SBI");
+	end
+rule "Offer for firstTime user"
+salience 2
+	when
+		productObject: Product(firstTime==true)
+	then
+		productObject.setDiscount(productObject.getDiscount() + 15);
+		System.out.println("first time user");
+	end	
+rule "Offer for platinum user"
+no-loop true
+salience 1
+	when
+		productObject:Product(buyer=="platinum")
+	then
+		update(productObject);
+		System.out.println("double the discount");
+	end		
+	
+rule "offer for shop"
+no-loop true
+	when 
+	$test : Shop($listOfProduct:product)
+	$prod : Product(cardType == 'IC') from $listOfProduct
+	then
+	 $test.getProduct().get($listOfProduct.indexOf($prod)).setDiscount(40);
+	//getPropertyRuleResult().get($listOfProperties.indexOf($property)).getMaxMinParameters().setMinCbsaValue$175k("PASS");
+	System.out.println($listOfProduct.indexOf($prod));
+	System.out.println( $test.getProduct().get($listOfProduct.indexOf($prod)));
+	System.out.println("welcome to list" + $listOfProduct.size());
+	end			 					

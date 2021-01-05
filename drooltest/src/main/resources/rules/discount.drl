@@ -1,0 +1,26 @@
+package rules
+import com.example.drooltest.model.LoanType
+import com.example.drooltest.model.Bridge
+import com.example.drooltest.model.LoanResult
+import java.math.BigDecimal
+
+rule "loan for bridge"
+when
+$loantype: LoanType()
+$bridge: Bridge(name=="bridge")
+then
+$loantype.getLoanResult().setEligibility("Yes");
+$loantype.getLoanResult().setInterest("10");
+System.out.println("hello");
+end
+
+
+rule "Offer for card AXIS"
+salience 2
+activation-group "AXIS"
+	when
+		productObject: Product(cardType=="AXIS")
+	then
+	  	productObject.setDiscount(productObject.getDiscount()+5);
+	  	System.out.println("cardType is AXIS");
+	end  
